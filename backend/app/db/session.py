@@ -6,9 +6,18 @@ from sqlalchemy.orm import sessionmaker
 
 load_dotenv()
 
-required_settings = ("DB_NAME", "DB_USER", "DB_PASSWORD")
+db_name = os.getenv("DB_NAME")
+db_user = os.getenv("DB_USER")
+db_password = os.getenv("DB_PASSWORD")
+
 missing_settings = [
-    name for name in required_settings if not os.getenv(name)
+    name
+    for name, value in (
+        ("DB_NAME", db_name),
+        ("DB_USER", db_user),
+        ("DB_PASSWORD", db_password),
+    )
+    if not value
 ]
 
 if missing_settings:
@@ -18,11 +27,11 @@ if missing_settings:
 
 database_url = URL.create(
     drivername="postgresql+psycopg",
-    username=os.environ["DB_USER"],
-    password=os.environ["DB_PASSWORD"],
+    username=db_user,
+    password=db_password,
     host=os.getenv("DB_HOST", "localhost"),
     port=int(os.getenv("DB_PORT", "5432")),
-    database=os.environ["DB_NAME"],
+    database=db_name,
 )
 
 engine = create_engine(
