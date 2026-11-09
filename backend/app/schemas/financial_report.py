@@ -1,6 +1,6 @@
 from datetime import date, datetime
 from uuid import UUID
-
+from typing import Literal
 from pydantic import BaseModel, ConfigDict
 
 
@@ -32,3 +32,21 @@ class FinancialReportDetail(BaseModel):
     created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
+    
+class ReportUploadAccepted(BaseModel):
+    report_id: UUID
+    extraction_job_id: UUID
+    job_status: Literal["QUEUED"]
+    message: str
+    
+class ReportProcessingStatus(BaseModel):
+    report_id: UUID
+    original_filename: str | None
+    report_status: str
+
+    extraction_job_id: UUID
+    job_status: str
+    error_message: str | None
+    job_created_at: datetime
+    started_at: datetime | None
+    finished_at: datetime | None
